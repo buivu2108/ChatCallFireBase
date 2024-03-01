@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "369590220388",
+    "project_id": "chatcallfirebase",
+    "storage_bucket": "chatcallfirebase.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:369590220388:android:632a16927cf6f426fd5171",
+        "android_client_info": {
+          "package_name": "com.chatcallapp.chatcallfirebase"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBwfDevj5re8dhac_6EMcppGDYif5K31yM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
