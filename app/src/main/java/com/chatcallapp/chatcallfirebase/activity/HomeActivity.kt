@@ -9,6 +9,7 @@ import com.bumptech.glide.Glide
 import com.chatcallapp.chatcallfirebase.R
 import com.chatcallapp.chatcallfirebase.adapter.UserAdapter
 import com.chatcallapp.chatcallfirebase.databinding.ActivityHomeBinding
+import com.chatcallapp.chatcallfirebase.extensions.setOnSingleClickListener
 import com.chatcallapp.chatcallfirebase.model.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -21,7 +22,6 @@ import com.google.firebase.messaging.FirebaseMessaging
 
 class HomeActivity : AppCompatActivity() {
     private lateinit var binding: ActivityHomeBinding
-    private var userAdapter: UserAdapter? = null
     var userList = ArrayList<User>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +34,10 @@ class HomeActivity : AppCompatActivity() {
     private fun initView() {
         binding.userRecyclerView.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+    }
+
+    override fun onStart() {
+        super.onStart()
         getUsersList()
     }
 
@@ -55,20 +59,19 @@ class HomeActivity : AppCompatActivity() {
 
             override fun onDataChange(snapshot: DataSnapshot) {
                 userList.clear()
-                val currentUser = snapshot.getValue(User::class.java)
-                if (currentUser!!.profileImage == "") {
-                    binding.imgProfile.setImageResource(R.drawable.profile_image)
-                } else {
-                    Glide.with(this@HomeActivity).load(currentUser.profileImage)
-                        .into(binding.imgProfile)
-                }
-
                 for (dataSnapShot: DataSnapshot in snapshot.children) {
                     val user = dataSnapShot.getValue(User::class.java)
-
-                    if (!user!!.userId.equals(firebase.uid)) {
-
-                        userList.add(user)
+                    if (user != null) {
+                        if (user.userId != firebase.uid) {
+                            userList.add(user)
+                        } else {
+                            if (user.profileImage == "") {
+                                binding.imgProfile.setImageResource(R.drawable.profile_image)
+                            } else {
+                                Glide.with(this@HomeActivity).load(user.profileImage)
+                                    .into(binding.imgProfile)
+                            }
+                        }
                     }
                 }
 
@@ -88,6 +91,11 @@ class HomeActivity : AppCompatActivity() {
     private fun initEvent() {
         binding.imgBack.setOnClickListener {
             onBackPressed()
+        }
+
+        binding.imgProfile.setOnSingleClickListener {
+            val intent = Intent(this@HomeActivity, ProfilesActivity::class.java)
+            startActivity(intent)
         }
     }
 }

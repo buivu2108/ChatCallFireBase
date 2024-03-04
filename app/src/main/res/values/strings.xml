@@ -10,6 +10,7 @@
     <string name="label_sign_in">Sign In</string>
     <string name="label_message">Message</string>
     <string name="label_profile">Profile</string>
+    <string name="label_home">Home</string>
     <string name="enter_password">Enter Password</string>
     <string name="enter_confirm_password">Enter Confirm Password</string>
 </resources>
