@@ -31,6 +31,7 @@ class LoginActivity : AppCompatActivity() {
         if (firebaseUser != null) {
             val intent = Intent(this@LoginActivity, HomeActivity::class.java)
             startActivity(intent)
+            finish()
         }
     }
 
@@ -38,6 +39,7 @@ class LoginActivity : AppCompatActivity() {
         binding.btnSignUp.setOnSingleClickListener {
             val intent = Intent(this, SignUpActivity::class.java)
             startActivity(intent)
+            finish()
         }
 
         binding.btnLogin.setOnSingleClickListener {

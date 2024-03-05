@@ -44,7 +44,7 @@ class UserAdapter(
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val txtUserName: TextView = view.findViewById(R.id.userName)
-        val imgUser: CircleImageView = view.findViewById(R.id.userImage)
+        val imgUser: CircleImageView = view.findViewById(R.id.userImageItem)
         val layoutUser: LinearLayout = view.findViewById(R.id.layoutUser)
     }
 }

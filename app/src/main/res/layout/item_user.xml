@@ -14,12 +14,12 @@
         android:orientation="horizontal">
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/userImage"
+            android:id="@+id/userImageItem"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
-            android:src="@mipmap/ic_launcher"
+            android:src="@drawable/profile_image"
             app:civ_border_color="@color/colorPrimary"
             app:civ_border_width="1dp" />
 
@@ -37,7 +37,7 @@
                 android:fontFamily="@font/gilroy_bold"
                 android:maxLines="1"
                 android:textSize="16sp"
-                tools:text="farhan" />
+                tools:text="name" />
 
             <TextView
                 android:id="@+id/temp"

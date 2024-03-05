@@ -90,7 +90,9 @@ class HomeActivity : AppCompatActivity() {
 
     private fun initEvent() {
         binding.imgBack.setOnClickListener {
-            onBackPressed()
+            val intent = Intent(this@HomeActivity, LoginActivity::class.java)
+            startActivity(intent)
+            finish()
         }
 
         binding.imgProfile.setOnSingleClickListener {
