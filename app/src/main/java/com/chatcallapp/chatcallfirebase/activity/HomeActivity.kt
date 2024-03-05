@@ -19,6 +19,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.messaging.FirebaseMessaging
+import com.permissionx.guolindev.PermissionX
 
 class HomeActivity : AppCompatActivity() {
     private lateinit var binding: ActivityHomeBinding
@@ -75,12 +76,27 @@ class HomeActivity : AppCompatActivity() {
                     }
                 }
 
-                val userAdapter = UserAdapter(this@HomeActivity, userList, onItemClick = { user ->
-                    val intent = Intent(this@HomeActivity, ChatActivity::class.java)
-                    intent.putExtra("userId", user.userId)
-                    intent.putExtra("userName", user.userName)
-                    startActivity(intent)
-                })
+                val userAdapter =
+                    UserAdapter(this@HomeActivity, userList, onItemChatClick = { user ->
+                        val intent = Intent(this@HomeActivity, ChatActivity::class.java)
+                        intent.putExtra("userId", user.userId)
+                        intent.putExtra("userName", user.userName)
+                        startActivity(intent)
+                    }, OnItemCallClick = { user ->
+                        PermissionX.init(this@HomeActivity)
+                            .permissions(
+                                android.Manifest.permission.CAMERA,
+                                android.Manifest.permission.RECORD_AUDIO
+                            )
+                            .request { allGranted, grantedList, deniedList ->
+                                if (allGranted) {
+                                    val intent = Intent(this@HomeActivity, ChatActivity::class.java)
+                                    intent.putExtra("userId", user.userId)
+                                    intent.putExtra("userName", user.userName)
+                                    startActivity(intent)
+                                }
+                            }
+                    })
 
                 binding.userRecyclerView.adapter = userAdapter
             }

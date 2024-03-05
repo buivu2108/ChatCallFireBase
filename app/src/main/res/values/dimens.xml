@@ -2,4 +2,8 @@
 <resources>
     <dimen name="_46dp">46dp</dimen>
     <dimen name="_48dp">48dp</dimen>
+    <dimen name="space_smaller">6dp</dimen>
+    <dimen name="common_size_3dp">3dp</dimen>
+    <dimen name="_1dp">1dp</dimen>
+    <dimen name="description_text">12sp</dimen>
 </resources>

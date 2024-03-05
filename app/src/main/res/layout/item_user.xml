@@ -1,53 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/layoutUser"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:paddingTop="10dp">
+    android:background="@color/secondary_background">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <FrameLayout
+        android:id="@+id/flAvatar"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_margin="@dimen/space_smaller"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/userImageItem"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:src="@drawable/profile_image"
-            app:civ_border_color="@color/colorPrimary"
-            app:civ_border_width="1dp" />
+            style="@style/avatar_item_list_user"
+            android:layout_width="60dp"
+            android:layout_height="60dp" />
+    </FrameLayout>
 
-        <LinearLayout
+    <LinearLayout
+        android:id="@+id/bgTimeConnection"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="@dimen/space_smaller"
+        android:layout_toStartOf="@+id/ivChatMessage"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/flAvatar"
+        app:layout_constraintRight_toLeftOf="@+id/ivChatMessage"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tvTime"
+            style="@style/item_callog_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/common_size_3dp"
+            android:gravity="left"
+            android:textColor="@color/white_dark"
+            android:textSize="12sp"
+            android:visibility="gone"
+            tools:ignore="RtlHardcoded" />
+
+        <TextView
+            android:id="@+id/tvUserName"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            tools:ignore="RtlHardcoded" />
 
-            android:gravity="center"
-            android:orientation="vertical">
+        <TextView
+            android:id="@+id/tvDuration"
+            style="@style/item_callog_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="5dp"
+            android:textSize="@dimen/description_text"
+            app:drawableLeftCompat="@drawable/ic_time_duration" />
 
-            <TextView
-                android:id="@+id/userName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/gilroy_bold"
-                android:maxLines="1"
-                android:textSize="16sp"
-                tools:text="name" />
-
-            <TextView
-                android:id="@+id/temp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/gilroy_light"
-                android:maxLines="1"
-                android:textSize="14sp"
-                tools:text="temp" />
-
-        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+
+    <ImageView
+        android:id="@+id/ivChatMessage"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="14dp"
+        android:src="@drawable/ic_chat_message"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/ivVideoCall"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
+
+    <ImageView
+        android:id="@+id/ivVideoCall"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="14dp"
+        android:src="@drawable/ic_video_call"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="@dimen/_1dp"
+        android:background="@color/prim"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/bgTimeConnection" />
+</androidx.constraintlayout.widget.ConstraintLayout>

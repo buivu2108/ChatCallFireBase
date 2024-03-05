@@ -7,6 +7,14 @@
 
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
 
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -16,6 +24,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ChatCallFireBase"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
             android:name=".activity.ProfilesActivity"
@@ -36,9 +45,10 @@
         <activity android:name=".activity.SignUpActivity" />
         <activity android:name=".activity.HomeActivity" />
 
-        <service android:name=".firebase.FirebaseService"
-            android:permission="com.google.android.c2dm.permission.SEND"
-            android:exported="false">
+        <service
+            android:name=".firebase.FirebaseService"
+            android:exported="false"
+            android:permission="com.google.android.c2dm.permission.SEND">
 
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
