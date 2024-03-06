@@ -7,16 +7,15 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.chatcallapp.chatcallfirebase.databinding.ActivitySignUpBinding
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
 import com.chatcallapp.chatcallfirebase.extensions.setOnSingleClickListener
+import com.chatcallapp.chatcallfirebase.repository.MainRepository
+import com.chatcallapp.chatcallfirebase.utils.SuccessCallBack
 import com.chatcallapp.chatcallfirebase.utils.ValidateUtil
 import com.google.firebase.auth.FirebaseAuth
 
 class SignUpActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySignUpBinding
     private lateinit var auth: FirebaseAuth
-    private lateinit var databaseReference: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,24 +77,21 @@ class SignUpActivity : AppCompatActivity() {
                     val user = auth.currentUser
                     val userId = user?.uid ?: ""
 
-                    //Khoi tao data base Users tren Fire Base
-                    databaseReference =
-                        FirebaseDatabase.getInstance().getReference("Users").child(userId)
-
                     val hashMap: HashMap<String, String> = HashMap()
                     hashMap["userId"] = userId
                     hashMap["userName"] = userName
                     hashMap["profileImage"] = ""
 
-                    //Day du lieu nen Data Base FireBase
-                    databaseReference.setValue(hashMap).addOnCompleteListener(this) {
-                        if (it.isSuccessful) {
-                            //open Home Activity
-                            val intent = Intent(this@SignUpActivity, HomeActivity::class.java)
-                            startActivity(intent)
-                        }
-                    }
-
+                    MainRepository.getInstance().login(
+                        applicationContext,
+                        hashMap,
+                        userId = userId,
+                        object : SuccessCallBack {
+                            override fun onSuccess() {
+                                val intent = Intent(this@SignUpActivity, HomeActivity::class.java)
+                                startActivity(intent)
+                            }
+                        })
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "createUserWithEmail:failure", task.exception)

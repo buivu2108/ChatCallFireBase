@@ -22,11 +22,12 @@ class FirebaseClient {
 
     private val gson: Gson = Gson()
     private val dbRef: DatabaseReference = FirebaseDatabase.getInstance().reference
-    private lateinit var currentUserName: String
+    private val dbRefUser: DatabaseReference = FirebaseDatabase.getInstance().getReference("Users")
+    private lateinit var currentUserId: String
 
-    fun login(userName: String, callBack: SuccessCallBack) {
-        dbRef.child(userName).setValue("").addOnCompleteListener {
-            currentUserName = userName
+    fun login(hashMap: HashMap<String, String>, callBack: SuccessCallBack) {
+        currentUserId = hashMap["userId"].toString()
+        dbRefUser.child(currentUserId).setValue(hashMap).addOnCompleteListener {
             callBack.onSuccess()
         }
     }
@@ -50,7 +51,7 @@ class FirebaseClient {
     }
 
     fun observeIncomingLatestEvent(newEventCallBack: NewEventCallBack) {
-        dbRef.child(currentUserName).child(LATEST_EVENT_FIELD_NAME)
+        dbRef.child(currentUserId).child(LATEST_EVENT_FIELD_NAME)
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     try {
@@ -70,7 +71,7 @@ class FirebaseClient {
     }
 
     fun observeCameraSwitchEvent(newEventCallBack: NewCameraCallBack) {
-        dbRef.child(currentUserName).child(CAMERA_EVENT_FIELD_NAME)
+        dbRef.child(currentUserId).child(CAMERA_EVENT_FIELD_NAME)
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     try {

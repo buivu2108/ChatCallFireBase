@@ -21,7 +21,7 @@ import org.webrtc.SurfaceViewRenderer
 class MainRepository private constructor() : WebRtcClient.Listener {
 
     private var firebaseClient: FirebaseClient = FirebaseClient()
-    private lateinit var currentUsername: String
+    private lateinit var currentUserId: String
     private lateinit var targetUsername: String
     private lateinit var webRtcClient: WebRtcClient
     private lateinit var remoteView: SurfaceViewRenderer
@@ -69,10 +69,15 @@ class MainRepository private constructor() : WebRtcClient.Listener {
         webRtcClient.closeConnection()
     }
 
-    fun login(context: Context, username: String, callBack: SuccessCallBack) {
-        firebaseClient.login(username, object : SuccessCallBack {
+    fun login(
+        context: Context,
+        hashMap: HashMap<String, String>,
+        userId: String,
+        callBack: SuccessCallBack
+    ) {
+        firebaseClient.login(hashMap, object : SuccessCallBack {
             override fun onSuccess() {
-                currentUsername = username
+                currentUserId = userId
                 webRtcClient = WebRtcClient(
                     context,
                     object : PeerConnectionObserver() {
@@ -97,7 +102,7 @@ class MainRepository private constructor() : WebRtcClient.Listener {
                                 webRtcClient.sendIceCandidate(it, targetUsername)
                             }
                         }
-                    }, username
+                    }, userId
                 )
                 webRtcClient.setListener(this@MainRepository)
                 callBack.onSuccess()
@@ -105,9 +110,10 @@ class MainRepository private constructor() : WebRtcClient.Listener {
         })
     }
 
+
     fun sendCallRequest(target: String, errorCallBack: ErrorCallBack) {
         firebaseClient.sendMessageToOtherUser(
-            DataModel(target, currentUsername, null, DataModelType.StartCall),
+            DataModel(target, currentUserId, null, DataModelType.StartCall),
             errorCallBack
         )
     }
@@ -157,7 +163,7 @@ class MainRepository private constructor() : WebRtcClient.Listener {
 
     fun sendSwitchCameraEvent(isFrontCamera: Boolean, errorCallBack: ErrorCallBack) {
         firebaseClient.sendCameraMessageToOtherUser(
-            CameraModel(targetUsername, currentUsername, isFrontCamera),
+            CameraModel(targetUsername, currentUserId, isFrontCamera),
             errorCallBack
         )
     }

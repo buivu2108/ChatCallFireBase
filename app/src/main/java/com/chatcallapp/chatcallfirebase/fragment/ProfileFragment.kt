@@ -1,16 +1,18 @@
-package com.chatcallapp.chatcallfirebase.activity
+package com.chatcallapp.chatcallfirebase.fragment
 
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.chatcallapp.chatcallfirebase.R
-import com.chatcallapp.chatcallfirebase.databinding.ActivityProfilesBinding
+import com.chatcallapp.chatcallfirebase.databinding.FragmentProfileBinding
 import com.chatcallapp.chatcallfirebase.model.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -23,8 +25,8 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import java.io.IOException
 
-class ProfilesActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityProfilesBinding
+class ProfileFragment : Fragment() {
+    private lateinit var binding: FragmentProfileBinding
 
     private var firebaseUser: FirebaseUser? = null
     private var databaseReference: DatabaseReference? = null
@@ -39,8 +41,20 @@ class ProfilesActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityProfilesBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        arguments?.let {
+        }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentProfileBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         initView()
         initEvent()
     }
@@ -58,24 +72,24 @@ class ProfilesActivity : AppCompatActivity() {
     private fun initEvent() {
         databaseReference?.addValueEventListener(object : ValueEventListener {
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(applicationContext, error.message, Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), error.message, Toast.LENGTH_SHORT).show()
             }
 
             override fun onDataChange(snapshot: DataSnapshot) {
                 val user = snapshot.getValue(User::class.java)
-                binding.etUserName.setText(user!!.userName)
+                binding.etUserName.setText(user?.userName)
 
-                if (user.profileImage == "") {
+                if (user?.profileImage == "") {
                     binding.userImage.setImageResource(R.drawable.profile_image)
                 } else {
-                    Glide.with(this@ProfilesActivity).load(user.profileImage)
+                    Glide.with(this@ProfileFragment).load(user?.profileImage)
                         .into(binding.userImage)
                 }
             }
         })
 
         binding.imgBack.setOnClickListener {
-            onBackPressed()
+            requireActivity().supportFragmentManager.popBackStack()
         }
 
         binding.userImage.setOnClickListener {
@@ -98,13 +112,13 @@ class ProfilesActivity : AppCompatActivity() {
                     hashMap["profileImage"] = filePath.toString()
                     databaseReference?.updateChildren(hashMap as Map<String, Any>)
                     binding.progressBar.visibility = View.GONE
-                    Toast.makeText(applicationContext, "Upload Success", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Upload Success", Toast.LENGTH_SHORT).show()
                     binding.btnSave.visibility = View.GONE
                 }
                 .addOnFailureListener {
                     binding.progressBar.visibility = View.GONE
                     Toast.makeText(
-                        applicationContext,
+                        requireContext(),
                         "Upload Failed" + it.message,
                         Toast.LENGTH_SHORT
                     )
@@ -126,12 +140,20 @@ class ProfilesActivity : AppCompatActivity() {
         if (requestCode == PICK_IMAGE_REQUEST) {
             filePath = data!!.data
             try {
-                val bitmap: Bitmap = MediaStore.Images.Media.getBitmap(contentResolver, filePath)
+                val bitmap: Bitmap =
+                    MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, filePath)
                 binding.userImage.setImageBitmap(bitmap)
                 binding.btnSave.visibility = View.VISIBLE
             } catch (e: IOException) {
                 e.printStackTrace()
             }
         }
+    }
+
+    companion object {
+
+        @JvmStatic
+        fun newInstance() = ProfileFragment()
+
     }
 }

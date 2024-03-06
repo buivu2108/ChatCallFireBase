@@ -10,12 +10,10 @@ import androidx.appcompat.app.AppCompatActivity
 import com.chatcallapp.chatcallfirebase.databinding.ActivityLoginBinding
 import com.chatcallapp.chatcallfirebase.extensions.setOnSingleClickListener
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
     private lateinit var auth: FirebaseAuth
-    private var firebaseUser: FirebaseUser? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,12 +25,6 @@ class LoginActivity : AppCompatActivity() {
 
     private fun initView() {
         auth = FirebaseAuth.getInstance()
-        firebaseUser = auth.currentUser
-        if (firebaseUser != null) {
-            val intent = Intent(this@LoginActivity, HomeActivity::class.java)
-            startActivity(intent)
-            finish()
-        }
     }
 
     private fun initEvent() {
