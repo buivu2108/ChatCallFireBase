@@ -30,17 +30,19 @@ class FirebaseClient {
         dbRefUser.child(currentUserId).setValue(hashMap).addOnCompleteListener {
             callBack.onSuccess()
         }
+        dbRef.child("Call").child(currentUserId).setValue("")
     }
 
     fun login(currentUserId: String) {
         this.currentUserId = currentUserId
+        dbRef.child("Call").child(currentUserId).setValue("")
     }
 
     fun sendMessageToOtherUser(dataModel: DataModel, errorCallBack: ErrorCallBack) {
         dbRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.child("Users").child(dataModel.target).exists()) {
-                    dbRef.child(dataModel.target).child(LATEST_EVENT_FIELD_NAME)
+                if (snapshot.child("Call").child(dataModel.target).exists()) {
+                    dbRef.child("Call").child(dataModel.target).child(LATEST_EVENT_FIELD_NAME)
                         .setValue(gson.toJson(dataModel))
                 } else {
                     errorCallBack.onError()
@@ -55,7 +57,7 @@ class FirebaseClient {
     }
 
     fun observeIncomingLatestEvent(newEventCallBack: NewEventCallBack) {
-        dbRef.child(currentUserId).child(LATEST_EVENT_FIELD_NAME)
+        dbRef.child("Call").child(currentUserId).child(LATEST_EVENT_FIELD_NAME)
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     try {
@@ -75,7 +77,7 @@ class FirebaseClient {
     }
 
     fun observeCameraSwitchEvent(newEventCallBack: NewCameraCallBack) {
-        dbRef.child(currentUserId).child(CAMERA_EVENT_FIELD_NAME)
+        dbRef.child("Call").child(currentUserId).child(CAMERA_EVENT_FIELD_NAME)
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     try {
@@ -97,8 +99,8 @@ class FirebaseClient {
     fun sendCameraMessageToOtherUser(cameraModel: CameraModel, errorCallBack: ErrorCallBack) {
         dbRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.child(cameraModel.target).exists()) {
-                    dbRef.child(cameraModel.target).child(CAMERA_EVENT_FIELD_NAME)
+                if (snapshot.child("Call").child(cameraModel.target).exists()) {
+                    dbRef.child("Call").child(cameraModel.target).child(CAMERA_EVENT_FIELD_NAME)
                         .setValue(gson.toJson(cameraModel))
                 } else {
                     errorCallBack.onError()
