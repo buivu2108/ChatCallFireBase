@@ -82,7 +82,7 @@ class SignUpActivity : AppCompatActivity() {
                     hashMap["userName"] = userName
                     hashMap["profileImage"] = ""
 
-                    MainRepository.getInstance().login(
+                    MainRepository.getInstance().signUp(
                         applicationContext,
                         hashMap,
                         userId = userId,

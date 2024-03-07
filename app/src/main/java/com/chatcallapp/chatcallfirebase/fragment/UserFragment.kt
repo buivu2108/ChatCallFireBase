@@ -108,7 +108,7 @@ class UserFragment : Fragment() {
                             )
                             .request { allGranted, grantedList, deniedList ->
                                 if (allGranted) {
-                                    startCall(user.userId)
+                                    startCall(user.userId,user.userName)
                                 }
                             }
                     })
@@ -119,10 +119,10 @@ class UserFragment : Fragment() {
         })
     }
 
-    private fun startCall(userId: String) {
-        if (userId.isEmpty()) {
+    private fun startCall(userId: String, userName: String) {
+        if (userId.isNotEmpty()) {
             // Start a call request
-            MainRepository.getInstance().sendCallRequest(userId, object : ErrorCallBack {
+            MainRepository.getInstance().sendCallRequest(userId,userName, object : ErrorCallBack {
                 override fun onError() {
                     Toast.makeText(
                         requireContext(),

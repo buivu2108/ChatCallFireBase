@@ -4,5 +4,6 @@ data class DataModel(
     val target: String,
     val sender: String,
     val data: String?,
-    val type: DataModelType
+    val type: DataModelType,
+    val senderName: String
 )

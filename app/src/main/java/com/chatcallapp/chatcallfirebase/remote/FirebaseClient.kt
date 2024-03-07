@@ -25,17 +25,21 @@ class FirebaseClient {
     private val dbRefUser: DatabaseReference = FirebaseDatabase.getInstance().getReference("Users")
     private lateinit var currentUserId: String
 
-    fun login(hashMap: HashMap<String, String>, callBack: SuccessCallBack) {
+    fun signUp(hashMap: HashMap<String, String>, callBack: SuccessCallBack) {
         currentUserId = hashMap["userId"].toString()
         dbRefUser.child(currentUserId).setValue(hashMap).addOnCompleteListener {
             callBack.onSuccess()
         }
     }
 
+    fun login(currentUserId: String) {
+        this.currentUserId = currentUserId
+    }
+
     fun sendMessageToOtherUser(dataModel: DataModel, errorCallBack: ErrorCallBack) {
         dbRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.child(dataModel.target).exists()) {
+                if (snapshot.child("Users").child(dataModel.target).exists()) {
                     dbRef.child(dataModel.target).child(LATEST_EVENT_FIELD_NAME)
                         .setValue(gson.toJson(dataModel))
                 } else {

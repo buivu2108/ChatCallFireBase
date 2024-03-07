@@ -142,7 +142,7 @@ class WebRtcClient(
         throw IllegalStateException("Front facing camera not found")
     }
 
-    fun call(target: String) {
+    fun call(target: String, userTargetName: String) {
         try {
             peerConnection.createOffer(object : SDPObserver() {
                 override fun onCreateSuccess(p0: SessionDescription?) {
@@ -158,7 +158,8 @@ class WebRtcClient(
                                         target,
                                         username,
                                         p0?.description,
-                                        DataModelType.Offer
+                                        DataModelType.Offer,
+                                        userTargetName
                                     )
                                 )
                             }
@@ -187,7 +188,7 @@ class WebRtcClient(
                                         target,
                                         username,
                                         p0?.description,
-                                        DataModelType.Answer
+                                        DataModelType.Answer, ""
                                     )
                                 )
                             }
@@ -211,7 +212,7 @@ class WebRtcClient(
     fun sendIceCandidate(iceCandidate: IceCandidate, target: String) {
         addIceCandidate(iceCandidate)
         listener.onTransferDataToOtherPeer(
-            DataModel(target, username, gson.toJson(iceCandidate), DataModelType.IceCandidate)
+            DataModel(target, username, gson.toJson(iceCandidate), DataModelType.IceCandidate, "")
         )
     }
 

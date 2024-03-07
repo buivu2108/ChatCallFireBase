@@ -8,25 +8,26 @@ import com.chatcallapp.chatcallfirebase.R
 import com.chatcallapp.chatcallfirebase.databinding.ActivityCallBinding
 import com.chatcallapp.chatcallfirebase.repository.MainRepository
 import com.chatcallapp.chatcallfirebase.utils.CameraModel
-import com.chatcallapp.chatcallfirebase.utils.DataModel
-import com.chatcallapp.chatcallfirebase.utils.DataModelType
 import com.chatcallapp.chatcallfirebase.utils.ErrorCallBack
 import com.chatcallapp.chatcallfirebase.utils.NewCameraCallBack
-import com.chatcallapp.chatcallfirebase.utils.NewEventCallBack
 
-class CallActivity : AppCompatActivity(), MainRepository.Listener {
+class CallActivity : AppCompatActivity() {
 
     private var isBackCamera: Boolean = false
     private var isMutedAudio = false
     private var isMutedVideo = false
-    private var userId: String? = null
+    private var userTargetId: String? = null
+    private var userTargetName: String? = null
+    private var typeCall: Int? = null
 
     private lateinit var binding: ActivityCallBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCallBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        userId = intent.getStringExtra("userIdCall")
+        userTargetId = intent.getStringExtra("userTargetId")
+        userTargetName = intent.getStringExtra("userTargetName")
+        typeCall = intent.getIntExtra("typeCall", 0)
 
         initView()
         initEvent()
@@ -35,13 +36,15 @@ class CallActivity : AppCompatActivity(), MainRepository.Listener {
     private fun initView() {
         MainRepository.getInstance().initLocalView(binding.svrLocalView)
         MainRepository.getInstance().initRemoteView(binding.svrRemoteView)
-        MainRepository.getInstance().setListener(this)
 
         MainRepository.getInstance().subscribeSwitchCameraEvent(object : NewCameraCallBack {
             override fun onCameraSwitch(cameraModel: CameraModel) {
                 binding.svrRemoteView.setMirror(cameraModel.isFrontCamera)
             }
         })
+        if (typeCall == 1 && !userTargetId.isNullOrEmpty()) {
+            MainRepository.getInstance().startCall(userTargetId!!, userTargetName ?: "")
+        }
     }
 
     private fun initEvent() {
@@ -77,15 +80,5 @@ class CallActivity : AppCompatActivity(), MainRepository.Listener {
                     }
                 })
         }
-    }
-
-    override fun onWebRtcConnected() {
-        runOnUiThread {
-            binding.groupCallView.visibility = View.VISIBLE
-        }
-    }
-
-    override fun onWebRtcClose() {
-        finish()
     }
 }

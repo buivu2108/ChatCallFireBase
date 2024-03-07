@@ -22,7 +22,7 @@ class MainRepository private constructor() : WebRtcClient.Listener {
 
     private var firebaseClient: FirebaseClient = FirebaseClient()
     private lateinit var currentUserId: String
-    private lateinit var targetUsername: String
+    private lateinit var targetUserId: String
     private lateinit var webRtcClient: WebRtcClient
     private lateinit var remoteView: SurfaceViewRenderer
 
@@ -49,8 +49,8 @@ class MainRepository private constructor() : WebRtcClient.Listener {
         this.remoteView = surfaceViewRenderer
     }
 
-    fun startCall(target: String) {
-        webRtcClient.call(target)
+    fun startCall(target: String, userTargetName: String) {
+        webRtcClient.call(target,userTargetName)
     }
 
     fun switchCamera() {
@@ -69,51 +69,61 @@ class MainRepository private constructor() : WebRtcClient.Listener {
         webRtcClient.closeConnection()
     }
 
-    fun login(
+    fun login(currentUserId: String, context: Context) {
+        this.currentUserId = currentUserId
+        firebaseClient.login(currentUserId)
+        createWebRTC(context, currentUserId)
+    }
+
+    fun signUp(
         context: Context,
         hashMap: HashMap<String, String>,
         userId: String,
         callBack: SuccessCallBack
     ) {
-        firebaseClient.login(hashMap, object : SuccessCallBack {
+        firebaseClient.signUp(hashMap, object : SuccessCallBack {
             override fun onSuccess() {
                 currentUserId = userId
-                webRtcClient = WebRtcClient(
-                    context,
-                    object : PeerConnectionObserver() {
-                        override fun onAddStream(p0: MediaStream?) {
-                            super.onAddStream(p0)
-                            p0?.videoTracks?.get(0)?.addSink(remoteView)
-                        }
-
-                        override fun onConnectionChange(newState: PeerConnection.PeerConnectionState?) {
-                            super.onConnectionChange(newState)
-                            if (newState == PeerConnection.PeerConnectionState.CONNECTED) {
-                                listener.onWebRtcConnected()
-                            }
-                            if (newState == PeerConnection.PeerConnectionState.CLOSED || newState == PeerConnection.PeerConnectionState.DISCONNECTED) {
-                                listener.onWebRtcClose()
-                            }
-                        }
-
-                        override fun onIceCandidate(p0: IceCandidate?) {
-                            super.onIceCandidate(p0)
-                            p0?.let {
-                                webRtcClient.sendIceCandidate(it, targetUsername)
-                            }
-                        }
-                    }, userId
-                )
-                webRtcClient.setListener(this@MainRepository)
+                createWebRTC(context, userId)
                 callBack.onSuccess()
             }
         })
     }
 
+    private fun createWebRTC(context: Context, userId: String) {
+        webRtcClient = WebRtcClient(
+            context,
+            object : PeerConnectionObserver() {
+                override fun onAddStream(p0: MediaStream?) {
+                    super.onAddStream(p0)
+                    p0?.videoTracks?.get(0)?.addSink(remoteView)
+                }
 
-    fun sendCallRequest(target: String, errorCallBack: ErrorCallBack) {
+                override fun onConnectionChange(newState: PeerConnection.PeerConnectionState?) {
+                    super.onConnectionChange(newState)
+                    if (newState == PeerConnection.PeerConnectionState.CONNECTED) {
+                        listener.onWebRtcConnected()
+                    }
+                    if (newState == PeerConnection.PeerConnectionState.CLOSED || newState == PeerConnection.PeerConnectionState.DISCONNECTED) {
+                        listener.onWebRtcClose()
+                    }
+                }
+
+                override fun onIceCandidate(p0: IceCandidate?) {
+                    super.onIceCandidate(p0)
+                    p0?.let {
+                        webRtcClient.sendIceCandidate(it, targetUserId)
+                    }
+                }
+            }, userId
+        )
+        webRtcClient.setListener(this@MainRepository)
+    }
+
+
+    fun sendCallRequest(target: String, userName: String, errorCallBack: ErrorCallBack) {
         firebaseClient.sendMessageToOtherUser(
-            DataModel(target, currentUserId, null, DataModelType.StartCall),
+            DataModel(target, currentUserId, null, DataModelType.StartCall,userName),
             errorCallBack
         )
     }
@@ -123,7 +133,7 @@ class MainRepository private constructor() : WebRtcClient.Listener {
             override fun onNewEventReceived(model: DataModel) {
                 when (model.type) {
                     DataModelType.Offer -> {
-                        targetUsername = model.sender
+                        targetUserId = model.sender
                         webRtcClient.onRemoteSessionReceived(
                             SessionDescription(SessionDescription.Type.OFFER, model.data)
                         )
@@ -131,7 +141,7 @@ class MainRepository private constructor() : WebRtcClient.Listener {
                     }
 
                     DataModelType.Answer -> {
-                        targetUsername = model.sender
+                        targetUserId = model.sender
                         webRtcClient.onRemoteSessionReceived(
                             SessionDescription(SessionDescription.Type.ANSWER, model.data)
                         )
@@ -143,7 +153,7 @@ class MainRepository private constructor() : WebRtcClient.Listener {
                     }
 
                     DataModelType.StartCall -> {
-                        targetUsername = model.sender
+                        targetUserId = model.sender
                         callBack.onNewEventReceived(model)
                     }
                 }
@@ -163,7 +173,7 @@ class MainRepository private constructor() : WebRtcClient.Listener {
 
     fun sendSwitchCameraEvent(isFrontCamera: Boolean, errorCallBack: ErrorCallBack) {
         firebaseClient.sendCameraMessageToOtherUser(
-            CameraModel(targetUsername, currentUserId, isFrontCamera),
+            CameraModel(targetUserId, currentUserId, isFrontCamera),
             errorCallBack
         )
     }
