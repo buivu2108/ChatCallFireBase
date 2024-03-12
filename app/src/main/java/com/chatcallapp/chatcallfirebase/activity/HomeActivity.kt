@@ -12,6 +12,7 @@ import com.chatcallapp.chatcallfirebase.fragment.UserFragment
 import com.chatcallapp.chatcallfirebase.repository.MainRepository
 import com.chatcallapp.chatcallfirebase.utils.DataModel
 import com.chatcallapp.chatcallfirebase.utils.DataModelType
+import com.chatcallapp.chatcallfirebase.utils.ErrorCallBack
 import com.chatcallapp.chatcallfirebase.utils.NewEventCallBack
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -53,22 +54,39 @@ class HomeActivity : AppCompatActivity(), MainRepository.Listener {
 
         MainRepository.getInstance().subscribeForLatestEvent(object : NewEventCallBack {
             override fun onNewEventReceived(model: DataModel) {
-                if (model.type == DataModelType.StartCall) {
-                    binding.rlIncomingCall.visibility = View.VISIBLE
-                    binding.tvIncomingUsername.text = "${model.senderName} is calling..."
+                when (model.type) {
+                    DataModelType.StartCall -> {
+                        binding.rlIncomingCall.visibility = View.VISIBLE
+                        binding.tvIncomingUsername.text = "${model.senderName} is calling..."
 
-                    binding.ibtnEndCall.setOnClickListener {
-                        binding.rlIncomingCall.visibility = View.GONE
+                        binding.ibtnEndCall.setOnClickListener {
+                            binding.rlIncomingCall.visibility = View.GONE
+                        }
+
+                        binding.ibtnStartCall.setOnClickListener {
+                            binding.rlIncomingCall.visibility = View.GONE
+
+                            MainRepository.getInstance().sendAcceptCallRequest(
+                                model.sender,
+                                model.target,
+                                object : ErrorCallBack { override fun onError() {} }
+                            )
+
+                            val intent = Intent(this@HomeActivity, CallActivity::class.java)
+                            intent.putExtra("typeCall", 1)
+                            intent.putExtra("userTargetId", model.sender)
+                            intent.putExtra("userTargetName", model.senderName)
+                            startActivity(intent)
+                        }
                     }
-
-                    binding.ibtnStartCall.setOnClickListener {
-                        binding.rlIncomingCall.visibility = View.GONE
+                    DataModelType.AcceptCall -> {
                         val intent = Intent(this@HomeActivity, CallActivity::class.java)
-                        intent.putExtra("typeCall", 1)
+                        intent.putExtra("typeCall", 0)
                         intent.putExtra("userTargetId", model.sender)
                         intent.putExtra("userTargetName", model.senderName)
                         startActivity(intent)
                     }
+                    else -> {}
                 }
             }
         })
@@ -76,10 +94,10 @@ class HomeActivity : AppCompatActivity(), MainRepository.Listener {
 
     override fun onWebRtcConnected() {
         runOnUiThread {
-            binding.rlIncomingCall.visibility = View.GONE
-            val intent = Intent(this@HomeActivity, CallActivity::class.java)
-            intent.putExtra("typeCall", 0)
-            startActivity(intent)
+//            binding.rlIncomingCall.visibility = View.GONE
+//            val intent = Intent(this@HomeActivity, CallActivity::class.java)
+//            intent.putExtra("typeCall", 0)
+//            startActivity(intent)
         }
     }
 

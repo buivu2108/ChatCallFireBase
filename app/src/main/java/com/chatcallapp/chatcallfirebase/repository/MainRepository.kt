@@ -123,7 +123,14 @@ class MainRepository private constructor() : WebRtcClient.Listener {
 
     fun sendCallRequest(target: String, userName: String, errorCallBack: ErrorCallBack) {
         firebaseClient.sendMessageToOtherUser(
-            DataModel(target, currentUserId, null, DataModelType.StartCall,userName),
+            DataModel(target, currentUserId, null, DataModelType.StartCall, userName),
+            errorCallBack
+        )
+    }
+
+    fun sendAcceptCallRequest(target: String, userName: String, errorCallBack: ErrorCallBack) {
+        firebaseClient.sendMessageToOtherUser(
+            DataModel(target, currentUserId, null, DataModelType.AcceptCall, userName),
             errorCallBack
         )
     }
@@ -154,6 +161,9 @@ class MainRepository private constructor() : WebRtcClient.Listener {
 
                     DataModelType.StartCall -> {
                         targetUserId = model.sender
+                        callBack.onNewEventReceived(model)
+                    }
+                    DataModelType.AcceptCall -> {
                         callBack.onNewEventReceived(model)
                     }
                 }

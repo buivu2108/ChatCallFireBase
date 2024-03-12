@@ -1,15 +1,18 @@
 package com.chatcallapp.chatcallfirebase.activity
 
 import android.os.Bundle
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.chatcallapp.chatcallfirebase.R
 import com.chatcallapp.chatcallfirebase.databinding.ActivityCallBinding
 import com.chatcallapp.chatcallfirebase.repository.MainRepository
 import com.chatcallapp.chatcallfirebase.utils.CameraModel
 import com.chatcallapp.chatcallfirebase.utils.ErrorCallBack
 import com.chatcallapp.chatcallfirebase.utils.NewCameraCallBack
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class CallActivity : AppCompatActivity() {
 
@@ -42,9 +45,6 @@ class CallActivity : AppCompatActivity() {
                 binding.svrRemoteView.setMirror(cameraModel.isFrontCamera)
             }
         })
-        if (typeCall == 1 && !userTargetId.isNullOrEmpty()) {
-            MainRepository.getInstance().startCall(userTargetId!!, userTargetName ?: "")
-        }
     }
 
     private fun initEvent() {
@@ -79,6 +79,18 @@ class CallActivity : AppCompatActivity() {
                         ).show()
                     }
                 })
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        lifecycleScope.launch  {
+            if (typeCall == 1 && !userTargetId.isNullOrEmpty()) {
+                withContext(Dispatchers.IO) {
+                    Thread.sleep(500)
+                }
+                MainRepository.getInstance().startCall(userTargetId!!, userTargetName ?: "")
+            }
         }
     }
 }
