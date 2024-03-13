@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ChatCallFireBase</string>
+    <string name="app_name">TalkToSomeOne</string>
     <string name="enter_name">Enter Name</string>
     <string name="enter_email">Enter Email</string>
     <string name="type_message">Type Message</string>
