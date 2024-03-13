@@ -7,8 +7,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
 import com.chatcallapp.chatcallfirebase.R
 import com.chatcallapp.chatcallfirebase.databinding.ActivityHomeBinding
+import com.chatcallapp.chatcallfirebase.extensions.setOnSingleClickListener
 import com.chatcallapp.chatcallfirebase.fragment.ProfileFragment
 import com.chatcallapp.chatcallfirebase.fragment.UserFragment
+import com.chatcallapp.chatcallfirebase.point.PointListActivity
 import com.chatcallapp.chatcallfirebase.repository.MainRepository
 import com.chatcallapp.chatcallfirebase.utils.DataModel
 import com.chatcallapp.chatcallfirebase.utils.DataModelType
@@ -69,7 +71,9 @@ class HomeActivity : AppCompatActivity(), MainRepository.Listener {
                             MainRepository.getInstance().sendAcceptCallRequest(
                                 model.sender,
                                 model.target,
-                                object : ErrorCallBack { override fun onError() {} }
+                                object : ErrorCallBack {
+                                    override fun onError() {}
+                                }
                             )
 
                             val intent = Intent(this@HomeActivity, CallActivity::class.java)
@@ -79,6 +83,7 @@ class HomeActivity : AppCompatActivity(), MainRepository.Listener {
                             startActivity(intent)
                         }
                     }
+
                     DataModelType.AcceptCall -> {
                         val intent = Intent(this@HomeActivity, CallActivity::class.java)
                         intent.putExtra("typeCall", 0)
@@ -86,10 +91,16 @@ class HomeActivity : AppCompatActivity(), MainRepository.Listener {
                         intent.putExtra("userTargetName", model.senderName)
                         startActivity(intent)
                     }
+
                     else -> {}
                 }
             }
         })
+
+        binding.icBuyPoint.setOnSingleClickListener {
+            val intent = Intent(this@HomeActivity, PointListActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     override fun onWebRtcConnected() {
