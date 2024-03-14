@@ -13,7 +13,7 @@ import com.bumptech.glide.Glide
 import com.chatcallapp.chatcallfirebase.R
 import com.chatcallapp.chatcallfirebase.activity.ChatActivity
 import com.chatcallapp.chatcallfirebase.activity.HomeActivity
-import com.chatcallapp.chatcallfirebase.activity.LoginActivity
+import com.chatcallapp.chatcallfirebase.activity.SignUpActivity
 import com.chatcallapp.chatcallfirebase.adapter.UserAdapter
 import com.chatcallapp.chatcallfirebase.databinding.FragmentUserBinding
 import com.chatcallapp.chatcallfirebase.extensions.setOnSingleClickListener
@@ -108,7 +108,7 @@ class UserFragment : Fragment() {
                             )
                             .request { allGranted, grantedList, deniedList ->
                                 if (allGranted) {
-                                    startCall(user.userId,user.userName)
+                                    startCall(user.userId, user.userName)
                                 }
                             }
                     })
@@ -122,7 +122,7 @@ class UserFragment : Fragment() {
     private fun startCall(userId: String, userName: String) {
         if (userId.isNotEmpty()) {
             // Start a call request
-            MainRepository.getInstance().sendCallRequest(userId,userName, object : ErrorCallBack {
+            MainRepository.getInstance().sendCallRequest(userId, userName, object : ErrorCallBack {
                 override fun onError() {
                     Toast.makeText(
                         requireContext(),
@@ -138,7 +138,7 @@ class UserFragment : Fragment() {
 
     private fun initEvent() {
         binding.imgBack.setOnClickListener {
-            val intent = Intent(requireActivity(), LoginActivity::class.java)
+            val intent = Intent(requireActivity(), SignUpActivity::class.java)
             startActivity(intent)
         }
 

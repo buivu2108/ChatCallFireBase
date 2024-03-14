@@ -1,5 +1,6 @@
 package com.chatcallapp.chatcallfirebase.activity
 
+import android.Manifest
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -18,6 +19,7 @@ import com.chatcallapp.chatcallfirebase.utils.ErrorCallBack
 import com.chatcallapp.chatcallfirebase.utils.NewEventCallBack
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.permissionx.guolindev.PermissionX
 
 class HomeActivity : AppCompatActivity(), MainRepository.Listener {
     private lateinit var binding: ActivityHomeBinding
@@ -36,7 +38,7 @@ class HomeActivity : AppCompatActivity(), MainRepository.Listener {
             add(
                 R.id.fragment_container_view,
                 UserFragment.newInstance()
-            ).addToBackStack("UserFragment")
+            )
         }
     }
 
@@ -44,6 +46,7 @@ class HomeActivity : AppCompatActivity(), MainRepository.Listener {
         supportFragmentManager.commit {
             setReorderingAllowed(true)
             replace(R.id.fragment_container_view, ProfileFragment.newInstance())
+                .addToBackStack("ProfileFragment")
         }
 
     }
@@ -85,11 +88,22 @@ class HomeActivity : AppCompatActivity(), MainRepository.Listener {
                     }
 
                     DataModelType.AcceptCall -> {
-                        val intent = Intent(this@HomeActivity, CallActivity::class.java)
-                        intent.putExtra("typeCall", 0)
-                        intent.putExtra("userTargetId", model.sender)
-                        intent.putExtra("userTargetName", model.senderName)
-                        startActivity(intent)
+                        PermissionX.init(this@HomeActivity)
+                            .permissions(
+                                Manifest.permission.CAMERA,
+                                Manifest.permission.RECORD_AUDIO
+                            )
+                            .request { allGranted, grantedList, deniedList ->
+                                if (allGranted) {
+                                    val intent = Intent(this@HomeActivity, CallActivity::class.java)
+                                    intent.putExtra("typeCall", 0)
+                                    intent.putExtra("userTargetId", model.sender)
+                                    intent.putExtra("userTargetName", model.senderName)
+                                    startActivity(intent)
+                                } else {
+                                    binding.rlIncomingCall.visibility = View.GONE
+                                }
+                            }
                     }
 
                     else -> {}

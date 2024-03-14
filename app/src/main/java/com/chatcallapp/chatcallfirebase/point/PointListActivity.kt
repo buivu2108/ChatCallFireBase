@@ -1,5 +1,6 @@
 package com.chatcallapp.chatcallfirebase.point
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -15,6 +16,7 @@ import com.android.billingclient.api.ProductDetails
 import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.QueryProductDetailsParams
+import com.chatcallapp.chatcallfirebase.activity.HomeActivity
 import com.chatcallapp.chatcallfirebase.databinding.ActivityPointListBinding
 import com.chatcallapp.chatcallfirebase.model.ClientPackage
 import com.chatcallapp.chatcallfirebase.model.ServerPackage
@@ -46,7 +48,9 @@ class PointListActivity : AppCompatActivity() {
 
     private fun initEvent() {
         binding.imgBack.setOnClickListener {
-            onBackPressed()
+            val intent = Intent(this@PointListActivity, HomeActivity::class.java)
+            startActivity(intent)
+            finish()
         }
     }
 
