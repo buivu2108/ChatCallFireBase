@@ -3,7 +3,9 @@ package com.chatcallapp.chatcallfirebase.activity
 import android.Manifest
 import android.content.Intent
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
 import com.chatcallapp.chatcallfirebase.R
@@ -23,6 +25,8 @@ import com.permissionx.guolindev.PermissionX
 
 class HomeActivity : AppCompatActivity(), MainRepository.Listener {
     private lateinit var binding: ActivityHomeBinding
+    private var countDownTimer: CountDownTimer? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
@@ -40,6 +44,31 @@ class HomeActivity : AppCompatActivity(), MainRepository.Listener {
                 UserFragment.newInstance()
             )
         }
+    }
+
+    private fun cancelCountDownTimer() {
+        countDownTimer?.cancel()
+    }
+
+    fun runCountDownTimer() {
+        binding.bgStartCalling.visibility = View.VISIBLE
+        cancelCountDownTimer()
+        countDownTimer = object : CountDownTimer(20000, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                val seconds = (millisUntilFinished / 1000) % 60
+                binding.tvStarCallTimer.text =
+                    applicationContext.getString(R.string.tv_start_calling, seconds.toString())
+            }
+
+            override fun onFinish() {
+                Toast.makeText(
+                    applicationContext,
+                    "The other party did not respond",
+                    Toast.LENGTH_SHORT
+                ).show()
+                binding.bgStartCalling.visibility = View.GONE
+            }
+        }.start()
     }
 
     fun goMyProfile() {
@@ -88,6 +117,7 @@ class HomeActivity : AppCompatActivity(), MainRepository.Listener {
                     }
 
                     DataModelType.AcceptCall -> {
+                        binding.bgStartCalling.visibility = View.GONE
                         PermissionX.init(this@HomeActivity)
                             .permissions(
                                 Manifest.permission.CAMERA,

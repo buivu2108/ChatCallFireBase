@@ -134,6 +134,9 @@ class UserFragment : Fragment() {
         } else {
             Toast.makeText(requireContext(), "Please enter username!", Toast.LENGTH_SHORT).show()
         }
+        if (activity is HomeActivity) {
+            (activity as HomeActivity).runCountDownTimer()
+        }
     }
 
     private fun initEvent() {

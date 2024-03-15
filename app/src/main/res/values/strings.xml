@@ -12,6 +12,7 @@
     <string name="label_profile">Profile</string>
     <string name="label_home">Home</string>
     <string name="enter_password">Enter Password</string>
+    <string name="tv_start_calling">Sending call information to the other party\nWaiting for response in (%s)</string>
     <string name="enter_confirm_password">Enter Confirm Password</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

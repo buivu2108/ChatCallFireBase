@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
@@ -117,6 +118,7 @@ class PointListActivity : AppCompatActivity() {
     }
 
     private fun fillPointPackageToList(clientPackageList: MutableList<ClientPackage>) {
+        binding.tvListEmpty.isVisible = clientPackageList.isEmpty()
         pointAdapter = PointAdapter(clientPackageList) {
             clickPosition = it
             startPayment()
