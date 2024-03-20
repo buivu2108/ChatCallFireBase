@@ -6,7 +6,6 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.recyclerview.widget.RecyclerView
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingFlowParams
@@ -29,7 +28,6 @@ class PointListActivity : AppCompatActivity() {
     private var clientPackageList: MutableList<ClientPackage> = mutableListOf()
     private var getProductIdList: MutableList<String> = mutableListOf()
     private val mProductDetails: MutableList<ProductDetails> = ArrayList()
-    private var recyclerView: RecyclerView? = null
     private var pointAdapter: PointAdapter? = null
     private var clickPosition = -1
     private var transactionId = ""
@@ -123,7 +121,7 @@ class PointListActivity : AppCompatActivity() {
             clickPosition = it
             startPayment()
         }
-        recyclerView?.adapter = pointAdapter
+        binding.recyclerView.adapter = pointAdapter
         pointAdapter?.notifyDataSetChanged()
     }
 
