@@ -1,5 +1,6 @@
 package com.chatcallapp.chatcallfirebase.point
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -20,16 +21,17 @@ class PointAdapter(
         return ViewHolder(view)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.txtPoint.text = "${listPoint[position].point}"
-        holder.txtPrice.text = listPoint[position].serverPrice
+        holder.txtDescription.text = listPoint[position].description
+        holder.txtAmount.text = "${listPoint[position].amount}VND"
         holder.itemView.setOnClickListener { positionList.invoke(position) }
     }
 
     override fun getItemCount(): Int = listPoint.size
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var txtPrice: TextView = itemView.findViewById(R.id.txtPrice)
-        var txtPoint: TextView = itemView.findViewById(R.id.txtPoint)
+        var txtAmount: TextView = itemView.findViewById(R.id.txtAmount)
+        var txtDescription: TextView = itemView.findViewById(R.id.txtDescription)
     }
 }

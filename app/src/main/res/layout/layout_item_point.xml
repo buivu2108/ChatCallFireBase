@@ -3,48 +3,47 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
     android:layout_margin="2.5dp"
+    android:background="@color/white"
     android:elevation="1dp"
     android:gravity="center_vertical">
 
     <ImageView
-        android:layout_centerVertical="true"
         android:id="@+id/img_point_item_point"
         android:layout_width="wrap_content"
         android:layout_height="25dp"
+        android:layout_centerVertical="true"
         android:layout_margin="16dp"
         android:src="@drawable/ico_me_points_buy_point" />
 
     <TextView
-        android:id="@+id/txtPoint"
+        android:id="@+id/txtDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:layout_toLeftOf="@+id/txtPrice"
-        android:layout_toRightOf="@+id/img_point_item_point"
+        android:layout_toStartOf="@+id/txtAmount"
+        android:layout_toEndOf="@+id/img_point_item_point"
         android:textColor="@color/black"
         android:textSize="15sp"
         android:textStyle="bold"
-        tools:text="320pts"
-        android:layout_toEndOf="@+id/img_point_item_point"
-        android:layout_toStartOf="@+id/txtPrice" />
+        tools:text="320pts" />
 
     <TextView
-        android:id="@+id/txtPrice"
-        android:layout_width="90dp"
+        android:id="@+id/txtAmount"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
+        android:layout_marginEnd="16dp"
         android:background="@drawable/bg_button_buy_point"
         android:gravity="center"
-        android:layout_marginEnd="16dp"
-        android:paddingBottom="4dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
         android:paddingTop="4dp"
+        android:maxWidth="150dp"
+        android:paddingBottom="4dp"
         android:textColor="@color/white"
         android:textStyle="bold"
-        tools:text="$40.28"
-        android:layout_marginRight="16dp"
-        android:layout_alignParentEnd="true" />
+        tools:text="100000VND" />
 
 </RelativeLayout>
